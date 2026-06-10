@@ -9,6 +9,10 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>order-common</module>
+    </modules>
+
     <name>spring-cloud-order-demo</name>
     <description>Spring Cloud 订单系统练习项目</description>
 
