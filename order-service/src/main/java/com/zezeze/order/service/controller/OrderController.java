@@ -4,8 +4,8 @@ import com.zezeze.common.result.Result;
 import com.zezeze.order.api.dto.CreateOrderRequest;
 import com.zezeze.order.api.vo.OrderVO;
 import com.zezeze.order.service.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/orders")
@@ -17,12 +17,12 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-//    @Autowired
-//    private OrderService orderService;
 
     @PostMapping
-    public Result<OrderVO> createOrder(@RequestBody CreateOrderRequest request) {
+    public Result<OrderVO> createOrder(@Valid @RequestBody CreateOrderRequest request) {
         OrderVO orderVO = orderService.createOrder(request);
+
+
         return Result.success(orderVO);
     }
 
