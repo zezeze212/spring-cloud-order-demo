@@ -1,10 +1,11 @@
 package com.zezeze.order.service.service.impl;
 
 import com.zezeze.order.api.dto.CreateOrderRequest;
-import com.zezeze.order.api.vo.OrderVO;
-import com.zezeze.order.service.service.OrderService;
-import com.zezeze.order.service.mapper.OrderMapper;
 import com.zezeze.order.api.enums.OrderStatusEnum;
+import com.zezeze.order.api.vo.OrderVO;
+import com.zezeze.order.service.entity.OrderEntity;
+import com.zezeze.order.service.mapper.OrderMapper;
+import com.zezeze.order.service.service.OrderService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,24 +22,49 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderVO createOrder(CreateOrderRequest request) {
-        OrderVO orderVO = new OrderVO();
-        orderVO.setId(1L); // 可以用雪花或者自增策略
-        orderVO.setOrderNo("ORDER" + System.currentTimeMillis());
-        orderVO.setUserId(request.getUserId());
-        orderVO.setProductId(request.getProductId());
-        orderVO.setProductName("测试商品");
-        orderVO.setProductPrice(new BigDecimal("99.00"));
-        orderVO.setQuantity(request.getQuantity());
-        orderVO.setTotalAmount(orderVO.getProductPrice().multiply(new BigDecimal(request.getQuantity())));
-        orderVO.setStatus(OrderStatusEnum.CREATED.getCode());
-        orderVO.setCreateTime(LocalDateTime.now());
+        BigDecimal productPrice = new BigDecimal("99.00");
 
-        orderMapper.insertOrder(orderVO);
-        return orderVO;
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderNo("ORDER" + System.currentTimeMillis());
+        orderEntity.setUserId(request.getUserId());
+        orderEntity.setProductId(request.getProductId());
+        orderEntity.setProductName("测试商品");
+        orderEntity.setProductPrice(productPrice);
+        orderEntity.setQuantity(request.getQuantity());
+        orderEntity.setTotalAmount(productPrice.multiply(new BigDecimal(request.getQuantity())));
+        orderEntity.setStatus(OrderStatusEnum.CREATED.getCode());
+        orderEntity.setCreateTime(LocalDateTime.now());
+        orderEntity.setUpdateTime(LocalDateTime.now());
+
+        orderMapper.insertOrder(orderEntity);
+
+        return convertToVO(orderEntity);
     }
 
     @Override
     public OrderVO getOrderById(Long id) {
-        return orderMapper.selectOrderById(id);
+        OrderEntity orderEntity = orderMapper.selectOrderById(id);
+
+        if (orderEntity == null) {
+            return null;
+        }
+
+        return convertToVO(orderEntity);
+    }
+
+    private OrderVO convertToVO(OrderEntity orderEntity) {
+        OrderVO orderVO = new OrderVO();
+        orderVO.setId(orderEntity.getId());
+        orderVO.setOrderNo(orderEntity.getOrderNo());
+        orderVO.setUserId(orderEntity.getUserId());
+        orderVO.setProductId(orderEntity.getProductId());
+        orderVO.setProductName(orderEntity.getProductName());
+        orderVO.setProductPrice(orderEntity.getProductPrice());
+        orderVO.setQuantity(orderEntity.getQuantity());
+        orderVO.setTotalAmount(orderEntity.getTotalAmount());
+        orderVO.setStatus(orderEntity.getStatus());
+        orderVO.setCreateTime(orderEntity.getCreateTime());
+
+        return orderVO;
     }
 }

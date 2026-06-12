@@ -5,7 +5,7 @@
 
 <mapper namespace="com.zezeze.order.service.mapper.OrderMapper">
 
-    <resultMap id="OrderVOResultMap" type="com.zezeze.order.api.vo.OrderVO">
+    <resultMap id="OrderEntityResultMap" type="com.zezeze.order.service.entity.OrderEntity">
         <id column="id" property="id"/>
 
         <result column="order_no" property="orderNo"/>
@@ -17,10 +17,11 @@
         <result column="total_amount" property="totalAmount"/>
         <result column="status" property="status"/>
         <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <insert id="insertOrder"
-            parameterType="com.zezeze.order.api.vo.OrderVO"
+            parameterType="com.zezeze.order.service.entity.OrderEntity"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO t_order
@@ -33,7 +34,8 @@
         quantity,
         total_amount,
         status,
-        create_time
+        create_time,
+        update_time
         )
         VALUES
         (
@@ -45,13 +47,14 @@
         #{quantity},
         #{totalAmount},
         #{status},
-        #{createTime}
+        #{createTime},
+        #{updateTime}
         )
     </insert>
 
     <select id="selectOrderById"
             parameterType="java.lang.Long"
-            resultMap="OrderVOResultMap">
+            resultMap="OrderEntityResultMap">
         SELECT
         id,
         order_no,
@@ -62,7 +65,8 @@
         quantity,
         total_amount,
         status,
-        create_time
+        create_time,
+        update_time
         FROM t_order
         WHERE id = #{id}
     </select>
